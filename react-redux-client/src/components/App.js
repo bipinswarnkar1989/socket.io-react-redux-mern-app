@@ -5,11 +5,19 @@ import { LinkContainer } from 'react-router-bootstrap';
 import './App.css';
 import TodoForm from './TodoForm';
 
+import io from "socket.io-client";
+
+var socket = io.connect('http://localhost:3000');
+
 export default class App extends React.Component {
   constructor(props){
     super(props);
     this.toggleAddTodo = this.toggleAddTodo.bind(this);
     this.addTodo = this.addTodo.bind(this);
+    socket.on('TodoAdded', (data) => {
+      console.log('TodoAdded: '+JSON.stringify(data));
+      this.props.showTodoAddedBySocket(data);
+    });
   }
 
   toggleAddTodo(e){
@@ -21,14 +29,12 @@ export default class App extends React.Component {
       e.preventDefault();
       const form = document.getElementById('addTodoForm');
       if(form.todoText.value !== ""  && form.todoDesc.value !== ""){
-        const data = new FormData();
-       data.append('todoText', form.todoText.value);
-        data.append('todoDesc', form.todoDesc.value);
-        // const data = {
-        //   todoText: form.todoText.value,
-        //   todoDesc: form.todoDesc.value
-        // }
-        this.props.mappedAddTodo(data);
+        const socketData = {
+          todoText: form.todoText.value,
+          todoDesc: form.todoDesc.value
+        }
+        this.props.mappedAddTodo(socketData,socket);
+        //socket.emit('addTodo', socketData);
       form.reset();
       }
       else{

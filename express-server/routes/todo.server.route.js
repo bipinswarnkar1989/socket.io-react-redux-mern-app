@@ -8,13 +8,10 @@ import * as todoController from '../controllers/todo.server.controller';
 const router = express.Router();
 
 router.route('/')
-     .get(todoController.getTodos)
-     .post(todoController.addTodo)
-     .put(todoController.updateTodo);
+     .get(todoController.getTodos);
 
 router.route('/:id')
-      .get(todoController.getTodo)
-      .delete(todoController.deleteTodo);
+      .get(todoController.getTodo);
 
 
 export default router;

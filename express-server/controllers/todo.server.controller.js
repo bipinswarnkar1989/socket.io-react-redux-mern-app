@@ -1,6 +1,7 @@
 // ./express-server/controllers/todo.server.controller.js
 import mongoose from 'mongoose';
 
+
 //import models
 import Todo from '../models/todo.server.model';
 
@@ -14,25 +15,32 @@ export const getTodos = (req,res) => {
   });
 }
 
-export const addTodo = (req,res) => {
-  console.log(req.body);
-  const newTodo = new Todo(req.body);
+export const addTodo = (io,T) => {
+  let result;
+  const newTodo = new Todo(T);
   newTodo.save((err,todo) => {
     if(err){
-    return res.json({'success':false,'message':'Some Error'});
+      result = {'success':false,'message':'Some Error','error':err};
+      console.log(result);
     }
-
-    return res.json({'success':true,'message':'Todo added successfully',todo});
+    else{
+      const result = {'success':true,'message':'Todo Added Successfully',todo}
+       io.emit('TodoAdded', result);
+    }
   })
 }
 
-export const updateTodo = (req,res) => {
-  Todo.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true }, (err,todo) => {
+export const updateTodo = (io,T) => {
+  let result;
+  Todo.findOneAndUpdate({ _id:T.id }, T, { new:true }, (err,todo) => {
     if(err){
-    return res.json({'success':false,'message':'Some Error','error':err});
+    result = {'success':false,'message':'Some Error','error':err};
+    console.log(result);
     }
-    console.log(todo);
-    return res.json({'success':true,'message':'Updated successfully',todo});
+    else{
+     result = {'success':true,'message':'Todo Updated Successfully',todo};
+     io.emit('TodoUpdated', result);
+    }
   })
 }
 
@@ -50,12 +58,15 @@ export const getTodo = (req,res) => {
   })
 }
 
-export const deleteTodo = (req,res) => {
-  Todo.findByIdAndRemove(req.params.id, (err,todo) => {
+export const deleteTodo = (io,T) => {
+  let result;
+  Todo.findByIdAndRemove(T.id, (err,todo) => {
     if(err){
-    return res.json({'success':false,'message':'Some Error'});
+    result = {'success':false,'message':'Some Error','error':err};
+    console.log(result);
     }
 
-    return res.json({'success':true,'message':todo.todoText+' deleted successfully'});
+    result = {'success':true,'message':todo.todoText+'Todo deleted successfully'};
+    io.emit('TodoDeleted', result);
   })
 }
