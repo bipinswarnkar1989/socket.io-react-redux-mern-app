@@ -1,6 +1,7 @@
 // ./react-redux-client/src/reducers/appReducer.js
 const INITIAL_STATE = {
-  showAddTodo: false
+  showAddTodo: false,
+  socket:null
 }
 
 const appReducer = (currentState = INITIAL_STATE, action) => {

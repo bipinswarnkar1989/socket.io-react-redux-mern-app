@@ -12,6 +12,7 @@ var socket = io.connect('http://localhost:3000');
 export default class App extends React.Component {
   constructor(props){
     super(props);
+    this.props.mappedAppState.socket = socket;
     this.toggleAddTodo = this.toggleAddTodo.bind(this);
     this.addTodo = this.addTodo.bind(this);
     socket.on('TodoAdded', (data) => {
@@ -34,7 +35,6 @@ export default class App extends React.Component {
           todoDesc: form.todoDesc.value
         }
         this.props.mappedAddTodo(socketData,socket);
-        //socket.emit('addTodo', socketData);
       form.reset();
       }
       else{

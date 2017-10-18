@@ -243,14 +243,14 @@ export  const todoReducer = (currentState = INITIAL_STATE, action) => {
         }
 
   case 'DELETE_TODO_SUCCESS':
-  const filteredTodos = currentState.todos.filter((todo) => todo._id !== currentState.todoToDelete._id)
+  const filteredTodos = currentState.todos.filter((todo) => todo._id !== action.todoToDelete._id)
         return {
           ...currentState,
           todos:filteredTodos,
           todo:null,
           isFetching: false,
           error: null,
-          successMsg:action.message,
+          successMsg:action.todoToDelete.todoText+' '+action.message,
           showDeleteModal: true,
           todoToDelete: null,
           showEditModal: false,

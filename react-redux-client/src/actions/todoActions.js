@@ -12,22 +12,6 @@ export const addNewTodo = (todo,socket) => {
   return (dispatch) => {
     dispatch(addNewTodoRequest(todo));
     socket.emit('addTodo', todo);
-    // return fetch(apiUrl, {
-    //   method:'post',
-    //   body: todo,
-    // }).then(response => {
-    //   if(response.ok){
-    //     response.json().then(data => {
-    //
-    //       dispatch(addNewTodoRequestSuccess(data.todo, data.message))
-    //     })
-    //   }
-    //   else{
-    //     response.json().then(error => {
-    //       dispatch(addNewTodoRequestFailed(error))
-    //     })
-    //   }
-    // })
   }
 }
 
@@ -161,24 +145,10 @@ export const hideEditModal = () => {
   }
 }
 
-export const editTodo = (todo) => {
+export const editTodo = (todo,socket) => {
     return (dispatch) => {
       dispatch(editTodoRequest(todo));
-      return fetch(apiUrl, {
-        method:'put',
-        body:todo
-      }).then(response => {
-        if(response.ok){
-          response.json().then(data => {
-            dispatch(editTodoSuccess(data.todo,data.message));
-          })
-        }
-        else{
-          response.json().then(error => {
-            dispatch(editTodoFailed(error));
-          })
-        }
-      })
+      socket.emit('updateTodo', todo);
     }
 }
 
@@ -204,24 +174,10 @@ export const editTodoFailed = (error) => {
   }
 }
 
-export const deleteTodo = (todo) => {
+export const deleteTodo = (todo,socket) => {
   return (dispatch) => {
     dispatch(deleteTodoRequest(todo));
-    return fetch(apiUrl + todo._id ,{
-      method:'delete'
-    }).then(response => {
-      if(response.ok){
-        response.json().then(data => {
-          dispatch(deleteTodoSuccess(data.message));
-        })
-      }
-      else{
-        response.json().then(error => {
-          dispatch(deleteTodoFailed(error));
-        })
-      }
-    })
-
+    socket.emit('deleteTodo', todo);
   }
 }
 
@@ -232,10 +188,11 @@ export const deleteTodoRequest = (todo) => {
    }
 }
 
-export const deleteTodoSuccess = (message) => {
+export const deleteTodoSuccess = (data) => {
   return {
     type:'DELETE_TODO_SUCCESS',
-    message:message
+    message:data.message,
+    todoToDelete:data.todo
   }
 }
 

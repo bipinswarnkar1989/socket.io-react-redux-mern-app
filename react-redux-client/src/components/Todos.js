@@ -11,6 +11,17 @@ export default class Todos extends React.Component {
     this.submitEditTodo = this.submitEditTodo.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.cofirmDeleteTodo = this.cofirmDeleteTodo.bind(this);
+    const socket = this.props.mappedAppState.socket;
+    socket.on('TodoUpdated', (data) => {
+      console.log('TodoUpdated: '+JSON.stringify(data));
+      this.props.mappedEditSuccessBySocket(data);
+    });
+
+    socket.on('TodoDeleted', (data) => {
+      console.log('TodoDeleted: '+JSON.stringify(data));
+      this.props.mappedDeleteTodoBySocket(data);
+    })
+
   }
 
   componentWillMount(){
@@ -30,11 +41,12 @@ export default class Todos extends React.Component {
     e.preventDefault();
     const editForm = document.getElementById('EditTodoForm');
     if(editForm.todoText.value !== ""){
-      const data = new FormData();
-      data.append('id', editForm.id.value);
-     data.append('todoText', editForm.todoText.value);
-      data.append('todoDesc', editForm.todoDesc.value);
-      this.props.mappedEditTodo(data);
+      const socketData = {
+        id:editForm.id.value,
+        todoText:editForm.todoText.value,
+        todoDesc:editForm.todoDesc.value
+      };
+      this.props.mappedEditTodo(socketData,this.props.mappedAppState.socket);
     }
     else{
       return;
@@ -51,7 +63,7 @@ export default class Todos extends React.Component {
   }
 
   cofirmDeleteTodo(){
-    this.props.mappedDeleteTodo(this.props.mappedTodoState.todoToDelete);
+    this.props.mappedDeleteTodo(this.props.mappedTodoState.todoToDelete,this.props.mappedAppState.socket);
   }
 
   render(){
@@ -151,7 +163,7 @@ export default class Todos extends React.Component {
 
     {!todoState.todoToDelete && !todoState.error && !todoState.isFetching&&
       <Alert bsStyle="success">
- Todo <strong>{todoState.successMsg} </strong>
+  <strong>{todoState.successMsg} </strong>
 </Alert>
     }
     </Modal.Body>

@@ -10,6 +10,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 const store = configureStore();
 const history = syncHistoryWithStore(browserHistory, store);
 
+
 class App extends Component {
   render() {
     return (

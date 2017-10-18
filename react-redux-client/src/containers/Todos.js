@@ -7,7 +7,8 @@ import Todos from '../components/Todos';
 const mapStateToProps = (state,ownProps) => {
   return {
     //you can now say this.props.mappedAppSate
-    mappedTodoState: state.todoState
+    mappedTodoState: state.todoState,
+    mappedAppState: state.appState
   }
 }
 
@@ -16,12 +17,14 @@ const mapDispatchToProps = (dispatch) => {
   return {
     //you can now say this.props.mappedAppActions
     fetchTodos: () => dispatch(todoActions.fetchTodos()),
-    mappedEditTodo: todoToEdit => dispatch(todoActions.editTodo(todoToEdit)),
+    mappedEditTodo: (todoToEdit,socket) => dispatch(todoActions.editTodo(todoToEdit,socket)),
     mappedshowEditModal: todoToEdit => dispatch(todoActions.showEditModal(todoToEdit)),
     mappedhideEditModal: () => dispatch(todoActions.hideEditModal()),
-    mappedDeleteTodo: todoToDelete => dispatch(todoActions.deleteTodo(todoToDelete)),
+    mappedDeleteTodo: (todoToDelete,socket) => dispatch(todoActions.deleteTodo(todoToDelete,socket)),
     mappedshowDeleteModal: todoToDelete => dispatch(todoActions.showDeleteModal(todoToDelete)),
-    mappedhideDeleteModal: () => dispatch(todoActions.hideDeleteModal())
+    mappedhideDeleteModal: () => dispatch(todoActions.hideDeleteModal()),
+    mappedEditSuccessBySocket: data => dispatch(todoActions.editTodoSuccess(data.todo,data.message)),
+    mappedDeleteTodoBySocket: data =>dispatch(todoActions.deleteTodoSuccess(data))
   }
 }
 

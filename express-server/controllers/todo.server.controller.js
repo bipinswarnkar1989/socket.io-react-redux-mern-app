@@ -60,13 +60,14 @@ export const getTodo = (req,res) => {
 
 export const deleteTodo = (io,T) => {
   let result;
-  Todo.findByIdAndRemove(T.id, (err,todo) => {
+  Todo.findByIdAndRemove(T._id, (err,todo) => {
     if(err){
     result = {'success':false,'message':'Some Error','error':err};
     console.log(result);
     }
-
-    result = {'success':true,'message':todo.todoText+'Todo deleted successfully'};
-    io.emit('TodoDeleted', result);
+    else {
+      result = {'success':true,'message':'Todo deleted successfully', todo};
+      io.emit('TodoDeleted', result);
+    }
   })
 }
